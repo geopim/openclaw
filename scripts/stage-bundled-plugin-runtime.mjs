@@ -134,7 +134,15 @@ function stagePluginRuntimeOverlay(sourceDir, targetDir) {
       continue;
     }
 
-    symlinkPath(sourcePath, targetPath);
+    try {
+      symlinkPath(sourcePath, targetPath);
+    } catch (error) {
+      if (process.platform === "win32") {
+        fs.copyFileSync(sourcePath, targetPath);
+      } else {
+        throw error;
+      }
+    }
   }
 }
 
